@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+const apiKeys = require(process.cwd() + "/src/apiKeys.json");
 const cors = require("cors")({origin: true});
 const axios = require("axios").default;
 
@@ -7,10 +8,12 @@ const axios = require("axios").default;
 //
 
 export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-
   cors(request, response, () => {
-    axios.get("https://random-data-api.com/api/v2/users?size=2&is_xml=true")
+    axios.get("https://api.twitter.com/2/tweets/search/recent?query=from%3Aelonmusk", {
+      headers: {
+        "Authorization": `Bearer ${apiKeys.bearer}`,
+      },
+    })
         .then((r) => {
           response.send(r.data);
         })
